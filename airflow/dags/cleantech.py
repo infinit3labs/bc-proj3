@@ -11,8 +11,8 @@ from function.etl import arxiv_extract_load
 with DAG(
         dag_id='cleantech_pipeline',
         schedule_interval='0 6 * * *',
-        start_date=pendulum.datetime(2022, 12, 1, tz="UTC"),
-        catchup=False,
+        start_date=pendulum.datetime(2022, 12, 9, tz="UTC"),
+        catchup=True,
         dagrun_timeout=datetime.timedelta(minutes=60),
         tags=['cleantech']
 ) as workflow:
