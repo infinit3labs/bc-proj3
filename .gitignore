@@ -1,4 +1,4 @@
-/testing/env.bat
+/testing
 .env
 *secret*
 *.bat
