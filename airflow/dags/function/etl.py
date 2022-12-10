@@ -11,6 +11,7 @@ def update_nytimes_airbyte_source(run_year, run_month):
     url = os.environ.get('AIRBYTE_URL')
     auth = os.environ.get('AIRBYTE_AUTH')
     source_id = os.environ.get('AIRBYTE_NYT_SRC_ID')
+    nyt_api_key = os.environ.get('NYT_API_KEY')
     header = {
         'Authorization': f"Basic {auth}"
     }
@@ -21,7 +22,7 @@ def update_nytimes_airbyte_source(run_year, run_month):
         "sourceId": source_id,
         "connectionConfiguration": {
             "period": 30,
-            "api_key": "X8DXMfxfnaZFnxPN8YXhoZGSdDfUC0Ao",
+            "api_key": nyt_api_key,
             "end_date": f"{run_year}-{run_month}",
             "start_date": f"{run_year}-{run_month}"
         },
