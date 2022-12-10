@@ -1,0 +1,5 @@
+apache-airflow-providers-airbyte
+apache-airflow-providers-databricks
+requests
+boto3
+xmltodict
