@@ -91,7 +91,7 @@ ggl_words_df = spark.sql("""
 
 # COMMAND ----------
 
-nyt_words_df.createOrReplaceTempView('nyt')
+ggl_words_df.createOrReplaceTempView('ggl')
 
 # COMMAND ----------
 
@@ -127,7 +127,7 @@ arx_words_df = spark.sql("""
 
 # COMMAND ----------
 
-nyt_words_df.createOrReplaceTempView('nyt')
+arx_words_df.createOrReplaceTempView('arx')
 
 # COMMAND ----------
 

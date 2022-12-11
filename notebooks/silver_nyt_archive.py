@@ -25,29 +25,12 @@ table_name = 'nytarchive'
 
 if dbutils.widgets.get('is_fresh_load') == '1':
     spark.sql(f"drop table if exists main.silver.{table_name}")
-    spark.sql(f"drop table if exists main.silver.watermark_{table_name}")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Check for watermark value
 
 # COMMAND ----------
 
 # Does silver table exist?
 current_silver_tables = [t.name for t in spark.catalog.listTables('main.silver')]
 current_silver_tables
-
-# COMMAND ----------
-
-watermark_date = None
-if f'watermark_{table_name}' not in current_silver_tables and table_name not in current_silver_tables:
-    watermark_date = '1970-01-01'
-elif f'watermark_{table_name}' in current_silver_tables and table_name in current_silver_tables:
-    watermark_date = spark.read.table(f'main.silver.watermark_{table_name}').collect()[0]['watermark_date']
-else:
-    dbutils.notebook.exit('Preconditions not met - either both table and watermark exists, or neither')
-watermark_date
 
 # COMMAND ----------
 
@@ -118,6 +101,8 @@ if table_name not in current_silver_tables:
 else:
     spark.sql(f"""
         insert into main.silver.{table_name}
+        select *
+        from (
         select sha2(concat_ws('||', id, publish_dt), 256) as nyt_sk,
                id,
                abstract,
@@ -127,8 +112,11 @@ else:
                source_file_name,
                run_date,
                load_ts
-        from main.silver.{table_name} 
-        where publish_dt > '{watermark_date}'
+        from source ) t
+        where nyt_sk not in (
+            select nyt_sk
+            from main.silver.{table_name}
+        )
     """)
 
 # COMMAND ----------
@@ -166,33 +154,3 @@ display(metrics_df)
 # COMMAND ----------
 
 display(source_df.take(5))
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Update watermark value
-# MAGIC This is the max value of the publish date
-
-# COMMAND ----------
-
-max_date = str(spark.sql("select max(publish_dt) as max_date from source").collect()[0]['max_date'])
-max_date
-
-# COMMAND ----------
-
-spark.sql(f"create or replace table main.silver.watermark_{table_name} as select '{max_date}' as watermark_date")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Validate watermark value updated successfully
-
-# COMMAND ----------
-
-# Check updated watermark
-watermark_date = spark.read.table(f'main.silver.watermark_{table_name}').collect()[0]['watermark_date']
-watermark_date
-
-# COMMAND ----------
-
-assert watermark_date == max_date, print('Update to watermark table has failed')
