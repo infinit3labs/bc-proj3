@@ -1,0 +1,41 @@
+documentationUrl: https://docsurl.com
+connectionSpecification:
+  $schema: http://json-schema.org/draft-07/schema#
+  title: Google Scholar Spec
+  type: object
+  required:
+    - engine
+    - q
+    - as_ylo
+    - scisbd
+    - hl
+    - num
+    - api_key
+  properties:
+    engine:
+      type: string
+      description: Set parameter to google_scholar to use the Google Scholar API engine.
+      default: "google_scholar"
+    q:
+      type: string
+      description: The query to find articles in Google Scholar. Use + instead of spaces for multiple words.
+      default: "climate+change+technology"
+    as_ylo:
+      type: string
+      description: Parameter defines the year from which you want the results to be included. (e.g. if you set as_ylo parameter to the year 2018, the results before that year will be omitted.).
+      default: "2022"
+    scisbd:
+      type: string
+      description: Parameter defines articles added in the last year, sorted by date. It can be set to 1 to include only abstracts, or 2 to include everything. The default value is 0 which means that the articles are sorted by relevance.
+      default: "2"
+    hl:
+      type: string
+      description: Parameter defines the language to use for the Google Scholar search. It's a two-letter language code. (e.g., en for English, es for Spanish, or fr for French)
+      default: "en"
+    num:
+      type: string
+      description: Parameter defines the maximum number of results to return, limited to 20. (e.g., 10 (default) returns 10 results, 20 returns 20 results).
+      default: "20"
+    api_key:
+      type: string
+      description: Parameter defines the SerpApi private key to use.

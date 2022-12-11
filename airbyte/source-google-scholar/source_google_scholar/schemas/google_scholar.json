@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "properties": {
+    "organic_results": {
+      "items": {
+        "properties": {
+          "inline_links": {
+            "properties": {
+              "cached_page_link": {
+                "type": "string"
+              },
+              "html_version": {
+                "type": "string"
+              },
+              "serpapi_cite_link": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "link": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "publication_info": {
+            "properties": {
+              "authors": {
+                "items": {
+                  "properties": {
+                    "author_id": {
+                      "type": "string"
+                    },
+                    "link": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "serpapi_scholar_link": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "summary": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "resources": {
+            "items": {
+              "properties": {
+                "file_format": {
+                  "type": "string"
+                },
+                "link": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "result_id": {
+            "type": "string"
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "pagination": {
+      "properties": {
+        "current": {
+          "type": "integer"
+        },
+        "next": {
+          "type": "string"
+        },
+        "other_pages": {
+          "properties": {
+            "10": {
+              "type": "string"
+            },
+            "2": {
+              "type": "string"
+            },
+            "3": {
+              "type": "string"
+            },
+            "4": {
+              "type": "string"
+            },
+            "5": {
+              "type": "string"
+            },
+            "6": {
+              "type": "string"
+            },
+            "7": {
+              "type": "string"
+            },
+            "8": {
+              "type": "string"
+            },
+            "9": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "related_searches": {
+      "items": {
+        "properties": {
+          "link": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "search_information": {
+      "properties": {
+        "organic_results_state": {
+          "type": "string"
+        },
+        "query_displayed": {
+          "type": "string"
+        },
+        "time_taken_displayed": {
+          "type": "number"
+        },
+        "total_results": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "search_metadata": {
+      "properties": {
+        "created_at": {
+          "type": "string"
+        },
+        "google_scholar_url": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "json_endpoint": {
+          "type": "string"
+        },
+        "processed_at": {
+          "type": "string"
+        },
+        "raw_html_file": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "total_time_taken": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "search_parameters": {
+      "properties": {
+        "as_ylo": {
+          "type": "string"
+        },
+        "engine": {
+          "type": "string"
+        },
+        "hl": {
+          "type": "string"
+        },
+        "num": {
+          "type": "string"
+        },
+        "q": {
+          "type": "string"
+        },
+        "scisbd": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "serpapi_pagination": {
+      "properties": {
+        "current": {
+          "type": "integer"
+        },
+        "next": {
+          "type": "string"
+        },
+        "next_link": {
+          "type": "string"
+        },
+        "other_pages": {
+          "properties": {
+            "10": {
+              "type": "string"
+            },
+            "2": {
+              "type": "string"
+            },
+            "3": {
+              "type": "string"
+            },
+            "4": {
+              "type": "string"
+            },
+            "5": {
+              "type": "string"
+            },
+            "6": {
+              "type": "string"
+            },
+            "7": {
+              "type": "string"
+            },
+            "8": {
+              "type": "string"
+            },
+            "9": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
