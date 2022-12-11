@@ -140,7 +140,7 @@ else:
                  run_date,
                  load_ts
           from source
-          where updated_dt > '{watermark_date}'
+          where updated_dt >= '{watermark_date}'
         )
         merge into main.silver.{table_name} tgt
         using src

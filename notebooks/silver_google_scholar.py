@@ -158,7 +158,7 @@ else:
                source_file_name,
                run_date,
                load_ts
-        from main.silver.{table_name} ) t
+        from source ) t
         where publish_dt > '{watermark_date}'
     """)
 
