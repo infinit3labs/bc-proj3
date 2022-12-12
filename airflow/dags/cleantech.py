@@ -11,8 +11,8 @@ from function.etl import arxiv_extract_load
 
 with DAG(
         dag_id='cleantech_pipeline',
-        schedule_interval='0 6 * * *',
-        start_date=pendulum.datetime(2022, 12, 9, tz="UTC"),
+        schedule_interval=datetime.timedelta(days=1),
+        start_date=pendulum.datetime(2022, 12, 8, tz="UTC"),
         catchup=True,
         dagrun_timeout=datetime.timedelta(minutes=60),
         tags=['cleantech']
@@ -73,7 +73,7 @@ with DAG(
     )
 
     # Cleantech DAG
-    airbyte_task_google_scholar, \
+    [airbyte_task_google_scholar, \
     python_task_extract_arxiv, \
-    airbyte_task_update_source_ny_times >> airbyte_task_ny_times \
+    airbyte_task_update_source_ny_times >> airbyte_task_ny_times] \
     >> databricks_task
