@@ -4,28 +4,31 @@ import pendulum
 from airflow import DAG
 from airflow.models import Variable
 from airflow.providers.airbyte.operators.airbyte import AirbyteTriggerSyncOperator
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 from airflow.operators.python import PythonOperator
 from function.etl import update_nytimes_airbyte_source
 from function.etl import arxiv_extract_load
 
 with DAG(
         dag_id='cleantech_pipeline',
-        schedule_interval='0 6 * * *',
-        start_date=pendulum.datetime(2022, 12, 9, tz="UTC"),
+        schedule_interval=datetime.timedelta(days=1),
+        start_date=pendulum.datetime(2022, 12, 8, tz="UTC"),
         catchup=True,
         dagrun_timeout=datetime.timedelta(minutes=60),
         tags=['cleantech']
 ) as workflow:
     run_year = "{{ data_interval_end.format('YYYY') }}"
     run_month = "{{ data_interval_end.format('MM') }}"
+    run_date = "{{ data_interval_end.format('YYYYMMDD') }}"
 
-    # Airbyte
+    # Airbyte Connection Info
     airbyte_airflow_conn_id = Variable.get("airbyte-conn-id")
     airbyte_google_scholar_sync_id = Variable.get("airbyte-google-scholar-sync-id")
     airbyte_ny_times_sync_id = Variable.get("airbyte-ny-times-sync-id")
 
-    # Databricks
-    # databricks_airflow_conn = Variable.get("ajp_databricks_connection")
+    # Databricks Connection Info
+    databricks_airflow_conn_id = Variable.get("databricks-conn-id")
+    databricks_job_id = Variable.get("databricks-job-id")
 
     airbyte_task_google_scholar = AirbyteTriggerSyncOperator(
         task_id='airbyte_google_scholar',
@@ -59,55 +62,18 @@ with DAG(
         python_callable=arxiv_extract_load
     )
 
-    # # ABS tasks - dynamically created from airbyte_abs_endpoints dictionary
-    # airbyte_abs_tasks = [
-    #     AirbyteTriggerSyncOperator(
-    #         task_id=f'airbyte_abs_{next_key}',
-    #         airbyte_conn_id=airbyte_airflow_conn_id,
-    #         connection_id=next_val,
-    #         asynchronous=False,
-    #         timeout=3600,
-    #         wait_seconds=3
-    #     ) for next_key, next_val in airbyte_abs_endpoints.items()
-    # ]
-    #
-    # # Task setup for Databricks - ABS. Just one per layer needed.
-    # databricks_task_abs_bronze = DatabricksRunNowOperator(
-    #     task_id='databricks_abs_bronze',
-    #     job_name=databricks_abs_bronze_job_name,
-    #     databricks_conn_id=databricks_airflow_conn
-    # )
-    #
-    # databricks_task_abs_silver = DatabricksRunNowOperator(
-    #     task_id='databricks_abs_silver',
-    #     job_name=databricks_abs_silver_job_name,
-    #     databricks_conn_id=databricks_airflow_conn
-    # )
-    #
-    # # Task setup for Databricks - Domain. Just one per layer needed.
-    # databricks_task_domain_bronze = DatabricksRunNowOperator(
-    #     task_id='databricks_domain_bronze',
-    #     job_name=databricks_domain_bronze_job_name,
-    #     databricks_conn_id=databricks_airflow_conn
-    # )
-    #
-    # databricks_task_domain_silver = DatabricksRunNowOperator(
-    #     task_id='databricks_domain_silver',
-    #     job_name=databricks_domain_silver_job_name,
-    #     databricks_conn_id=databricks_airflow_conn
-    # )
-    #
-    # # Final combined dataset
-    # databricks_task_combined_gold = DatabricksRunNowOperator(
-    #     task_id='databricks_combined_gold',
-    #     job_name=databricks_combined_gold_job_name,
-    #     databricks_conn_id=databricks_airflow_conn
-    # )
+    # Job loads bronze, silver, and gold layers
+    databricks_task = DatabricksRunNowOperator(
+        task_id='databricks_cleantech',
+        job_id=databricks_job_id,
+        databricks_conn_id=databricks_airflow_conn_id,
+        notebook_params={
+            'run_date': run_date
+        }
+    )
 
-    # endregion Tasks
-
-    # region DAG
-    airbyte_task_google_scholar, \
+    # Cleantech DAG
+    [airbyte_task_google_scholar, \
     python_task_extract_arxiv, \
-    airbyte_task_update_source_ny_times >> airbyte_task_ny_times
-    # endregion DAG
+    airbyte_task_update_source_ny_times >> airbyte_task_ny_times] \
+    >> databricks_task
