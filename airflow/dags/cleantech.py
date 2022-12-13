@@ -28,7 +28,7 @@ with DAG(
 
     # Databricks Connection Info
     databricks_airflow_conn_id = Variable.get("databricks-conn-id")
-    databricks_run_name = Variable.get("databricks-run-name")
+    databricks_job_id = Variable.get("databricks-job-id")
 
     airbyte_task_google_scholar = AirbyteTriggerSyncOperator(
         task_id='airbyte_google_scholar',
@@ -65,7 +65,7 @@ with DAG(
     # Job loads bronze, silver, and gold layers
     databricks_task = DatabricksRunNowOperator(
         task_id='databricks_cleantech',
-        job_name=databricks_run_name,
+        job_id=databricks_job_id,
         databricks_conn_id=databricks_airflow_conn_id,
         notebook_params={
             'run_date': run_date
