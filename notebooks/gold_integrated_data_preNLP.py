@@ -47,7 +47,7 @@ arxiv_silver_df.createOrReplaceTempView('arx_slv')
 
 nyt_words_df = spark.sql("""
     select 'nyt' as source,
-           nyt_sk,
+           nyt_sk as source_sk,
            lower(concat_ws(' ', abstract, lead_paragraph, snippet)) as words,
            publish_dt
     from nyt_slv
@@ -83,7 +83,7 @@ display(nyt_words_df.take(5))
 
 ggl_words_df = spark.sql("""
     select 'ggl' as source,
-           ggl_sk,
+           ggl_sk as source_sk,
            lower(concat_ws(' ', snippet, title)) as words,
            publish_dt
     from ggl_slv
@@ -119,7 +119,7 @@ display(ggl_words_df.take(5))
 
 arx_words_df = spark.sql("""
     select 'arx' as source,
-           arx_sk,
+           arx_sk as source_sk,
            lower(concat_ws(' ', summary, title)) as words,
            updated_dt
     from arx_slv
